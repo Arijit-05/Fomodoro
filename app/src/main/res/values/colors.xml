@@ -26,4 +26,27 @@
     <color name="dark_card_background">#414247</color>
 
     <color name="slider_light">#FFCFCF</color>
+</resources> 
+
+
+    <!-- ⭐ New colors suggested for the Pomodoro application --> 
+
+    
+    <!-- Colors for different sessions -->
+    <color name="focus_primary">#FF5252</color>    <!-- Color for focus sessions -->
+    <color name="break_primary">#4CAF50</color>    <!-- Color for comfort sessions -->
+    <color name="long_break_primary">#2196F3</color> <!-- Color for long comfort sessions -->
+    
+    <!-- Colors for night mode -->
+    <color name="night_purple">#BB86FC</color>
+    <color name="night_teal">#03DAC6</color>
+    
+    <!-- Colors for gradients -->
+    <color name="gradient_start">#FF6B6B</color>
+    <color name="gradient_end">#FFE66D</color>
+    
+    <!-- Colors for texts -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_light">#FFFFFF</color>
 </resources>
