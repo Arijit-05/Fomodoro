@@ -41,6 +41,7 @@ import com.arijit.pomodoro.fragments.ShortBreakFragment
 import com.arijit.pomodoro.services.TimerService
 import com.arijit.pomodoro.utils.UltraFocusManager
 import android.content.SharedPreferences
+import androidx.core.view.WindowInsetsControllerCompat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var settings_btn: ImageView
@@ -296,9 +297,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val topPadding = if (shouldHideAmoledAwakeWindowBars()) {
+                getStatusBarHeight()
+            } else {
+                systemBars.top
+            }
+            v.setPadding(systemBars.left, topPadding, systemBars.right, systemBars.bottom)
             insets
         }
+        applyAmoledAwakeWindowBars()
 
         // Check if we need to restore a specific fragment from notification
         val fragmentType = intent.getStringExtra("fragmentType")
@@ -402,6 +409,31 @@ class MainActivity : AppCompatActivity() {
             UltraFocusManager.disableUltraFocusMode(this)
             UltraFocusManager.setOrientation(this, false)
         }
+        applyAmoledAwakeWindowBars()
+    }
+
+    private fun applyAmoledAwakeWindowBars() {
+        if (sharedPreferences.getBoolean("ultraFocusMode", false)) return
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+
+        if (shouldHideAmoledAwakeWindowBars()) {
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+        } else {
+            controller.show(WindowInsetsCompat.Type.systemBars())
+        }
+    }
+
+    private fun shouldHideAmoledAwakeWindowBars(): Boolean {
+        return sharedPreferences.getBoolean("amoledMode", false) &&
+            sharedPreferences.getBoolean("keepScreenAwake", false)
+    }
+
+    private fun getStatusBarHeight(): Int {
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
     }
 
     @RequiresPermission(Manifest.permission.VIBRATE)
